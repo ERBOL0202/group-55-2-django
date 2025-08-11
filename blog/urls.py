@@ -18,14 +18,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from posts.views import home, post_list_view, test_view
+from posts.views import home, post_list_view, test_view, post_detail_view
+from django.conf.urls.static import static
 
 urlpatterns = [
      path('', home),
     path('admin/', admin.site.urls),
     path('post/', post_list_view),
     path('test/', test_view),
-]
+    path("posts/<int:post_id>/", post_detail_view)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
