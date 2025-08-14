@@ -1,5 +1,18 @@
 from django.db import models
 
+""" 
+create table posts(id integer promary key autoincrement not null, title varchar(256) not null, content varchar(556));
+"""
+"""
+select * from posts ==>Post.objects.all()
+"""
+"""select * from posts where title ILIKE '%p%' ==> Post.objects.filter(title__icontains='probably') limit 10
+"""
+"""select 1 from posts where id = 123 ==> Post.objects.get(id=123)
+"""
+"""INSERT INTO posts(title, content) VALUES('title', 'content') ==>Post.objects.create(title='title', content='content')
+"""
+
 class Category(models.Model):
     name = models.CharField(max_length=256)
 
