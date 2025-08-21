@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 def register_view(reguest):
     if reguest.method == "GET":
         form = RegisterForm()
-    return render(reguest, "user/register.html", context={"form":form}) 
+    return render(reguest, "user/register.html", context={"form":form})
     if request.method == "POST":
         form = RegisterForm(request."POST")
         if not form.is_valid():
