@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<form style="padding: 15px;" action="" method="get", enctype="multipart/form-data">
-    {{ form.as_p }}
-    <button type="submit"><Search></Search></button>
-</form>
+<h1 class="mt5" style="text-align: center;">
+    Profile
+</h1>
+
+<div class="container">
+    <img src="{{profile.avatar.url}}" alt="Profile Picture" style="width: 200px; height: 200px; border-radius: 50%;">
+    <h2>{{profile.user.username}}</h2>
+    <h3>{{profile.user.first_name}}</h3>
+    <h3>{{profile.user.last_name}}</h3>
+    <h3>{{profile.user.email}}</h3>
+    <h3>{{profile.user.profile.age}}</h3>
+
+</div>
+<div style="margin-top: 30px; margin-bottom: 30px; ">
 {% for post in posts %}
 <div class="container mt-5">
   <div class="row g-5">  
@@ -32,18 +42,5 @@
       </div>
     </div>
     {% endfor %}
-  <div style="display: flex; justify-content: center; margin-top: 20px; margin-button: 20px;">
-      {% for i in max_pages %}
-        <a href="/post/page={{ i }}" class="btn btn-primary">
-          {{ 1 }}
-        </a>
-        <form style="padding: 15px;" action="" method="post", enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Comment</button>
-</form>
-{% endblock %}
-
   </div>
-</div>
-{% endblock %}
+{% endblock content %}

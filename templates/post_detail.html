@@ -18,9 +18,19 @@
           <p class="card-text">{{ post.content|truncatechars:60 }}</p>
           <h6 class="card-subtitle text-muted">{{ post.created_at }}</h6>
 
+
+          </div>
+        <div class="card-footer bg-white border-top-0">
+          <a href="#" class="btn btn-primary w-100">Comment</a>
+          {% if request.user == post.author %}
+          <a href="/posts/{{post.id}}/update" class="btn btn-primary w-100">Comment</a>
+
         </div>
         <div class="card-footer bg-white border-top-0">
           <a href="#" class="btn btn-primary w-100">Подробнее</a>
+          {% if request.user == post.author %}
+          <a href="/posts/{{post.id}}/update" class="btn btn-primary w-100">Update post</a>
+          {% endif %}
         </div>
       </div>
     </div>

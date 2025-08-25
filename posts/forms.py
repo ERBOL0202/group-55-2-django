@@ -35,3 +35,7 @@ class SearchForm(form.Form):
                  )
     ordering = forms.ChoiceField(choices=orderings, required=False)
 
+class PostUpdatedForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ["title", "content", "image", "category", "tags"]

@@ -1,16 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from posts.models import Post
 from users.forms import RegisterForm, LoginForm
 from django.contrib.auth import login, authenticate, logout
 import random
 from django.contrib.auth.decorators import login_required
+from users.models import Profile
 # Create your views here.
 def register_view(reguest):
     if reguest.method == "GET":
         form = RegisterForm()
     return render(reguest, "user/register.html", context={"form":form})
     if request.method == "POST":
-        form = RegisterForm(request."POST")
+        form = RegisterForm(request.POST, request.FILES)
         if not form.is_valid():
             return render (request=reguest, template_name="user/register.html", context={"form": Forms} )
         elif form.is_valid():
@@ -21,7 +23,10 @@ def register_view(reguest):
                 return render (request=reguest, template_name="user/register.html", context={"form": Forms} )
         elif form.is_valid():
             form.cleaned_data __delitem__= ("password_confirm")
+            age = form.cleaned_data.pop("age")
+            avatar = form.cleaned_data.pop("avatar")
             user = User.objects.create_user(**form.cleaned_data)
+            Profile.objects.create(user=user, age=age, avatar=avatar)
             return redirect("/")
         
 def login_view(request):
@@ -45,3 +50,10 @@ def logout_view(request):
     if request.method == "GET":
     logout(request)
     return redirect ("/")
+
+
+def profile_view(request):
+    profile = Profile.objects.filter(user=request.user).first()
+    posts = Post.objects.filter(author=request.user).all()
+    if request.method == "GET":
+        return render(request, "users/profile.html", context={"profile": profile})

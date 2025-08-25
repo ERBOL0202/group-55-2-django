@@ -1,9 +1,11 @@
 from django.shortcuts import render, HttpResponse, redirect
 
 from posts.models import Post
-from posts.forms import PostForm, SearchForm
+from posts.forms import PostForm, PostUpdatedForm, SearchForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.views import View
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 """
 posts = [post1, post2, post3, post4, post5, post6, post7, post8, post9, post10, post11, post12, post13, post14, post15, post16, post17, post18, post19, post20]
@@ -31,7 +33,7 @@ def test_view(request):
 def post_list_view(request):
     limit = 3
     if request.method == "GET":
-        posts = Post.objects.all()
+        posts = Post.objects.exclude(author=request.user)
         form = SearchForm()
         print(request.GET)
         q = request.GET.get("q")
@@ -64,6 +66,22 @@ def post_detail_view(request, post_id):
     if request.method == "GET":
         post = Post.objects.get(id=post_id)
         return render(request, "post_detail.html", context={"posts": posts})
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.save()
+            return redirect("post_detail", post_id=post.id)
+    else:
+        form = CommentForm()
+    return render(request, "post_detail.html", context={"posts": posts, "comment":comment})
+    
+class PostDetailView(DetailView):
+    model = Post
+    template_name = "post_detail.html"
+    context_object_name = "post"
+    pk_url_kwarg = "post_id"
 
 @login_required(login_url="/login")
 def post_create_view(request):
@@ -80,4 +98,30 @@ def post_create_view(request):
             image = form.cleaned_data.get("image")
             Post.objects.create(title=title, content=content, image=image)
         return redirect("/posts")
+
+class PostCreateView(CreateView):
+    model = Post
+    template_name =  "post/post_create.html"
+    form_class = PostForm
+    success_url = "/posts/class/"
+
+def post_update_view(request, post_id):
+    post = Post.objects.filter(id=post_id).first()
+    if not post:
+        return HttpResponse("Post not found")
+    if request.method == "GET":
+        form = PostUpdatedForm(instance=post)
+        return render(request, "posts/post_update.html", context={"form":form, "post":post})
+    if request.method == "POST":
+        post = PostUpdatedForm(request.POST, request.FILES, instance=post)
+        if not form.is_valid():
+            return render(request, "posts/post_update.html", context={"form":form})
+        elif form.is_valid():
+            form.save()
+            return redirect("profile")
         
+class PostUpdateView(UpdateView):
+    model = Post
+    template_name = "posts/post_update.html"
+    form_class = PostForm
+    success_url = "/posts/class/"

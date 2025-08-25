@@ -18,8 +18,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from posts.views import home, post_list_view, test_view, post_detail_view, post_create_view
-from users.views import register_view, login_view, logout_view
+from posts.views import home, post_list_view, test_view, post_detail_view, post_create_view, post_update_view
+from users.views import register_view, login_view, logout_view, profile_view
 from django.conf.urls.static import static
 
 
@@ -27,6 +27,7 @@ user_patterns = [
     path("register/", register_view, name="register" ),
     path("login/", login_view, name="login" ),
     path("logout/", logout_view, name="logout" ),
+    path("profile/", profile_view, name="profile" ),
 ]
 
 post_patterns = [
@@ -35,7 +36,11 @@ post_patterns = [
     path('post/', post_list_view),
     path('test/', test_view),
     path("posts/<int:post_id>/", post_detail_view),
-    path("posts/create/", post_create_view)
+    path("posts/create/", post_create_view),
+    path("posts/<int:post_id>/update/", post_update_view),
+    path("posts/create/class", PostcCreateView.as_view()),
+    path("posts/detail/class", PostcDetailView.as_view()),
+    path("posts/update/class", PostcUpdateView.as_view()),
 ] 
 
 urlpatterns = user_patterns + post_patterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
